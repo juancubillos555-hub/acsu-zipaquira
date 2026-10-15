@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACSU - Iniciar sesión</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+<main class="login-container">
+    <section class="login-card">
+
+        <div class="logo">
+            <img src="imagen1.jpg" alt="Logo ACSU" onerror="this.style.display='none'">
+        </div>
+
+        <h1>Bienvenido a ACSU</h1>
+        <p class="subtitulo">Seguridad ciudadana para Zipaquirá</p>
+
+        <div class="mensaje-info">
+            <span>🔐</span>
+            <div>
+                <strong>Verificación de identidad</strong>
+                <p>Para realizar reportes necesitamos confirmar algunos datos.</p>
+            </div>
+        </div>
+
+        <form id="loginForm" novalidate>
+
+            <div class="campo">
+                <label for="documento">🪪 Número de documento</label>
+                <input
+                    type="text"
+                    id="documento"
+                    placeholder="Ejemplo: 1234567890"
+                    maxlength="10"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    required
+                >
+                <small>Ingresa únicamente números (entre 6 y 10).</small>
+            </div>
+
+            <div class="campo">
+                <label for="fechaNacimiento">🎂 Fecha de nacimiento</label>
+                <input type="date" id="fechaNacimiento" min="1900-01-01" required>
+            </div>
+
+            <div class="campo">
+                <label for="nombre">👤 Nombre</label>
+                <input
+                    type="text"
+                    id="nombre"
+                    placeholder="Escribe tu nombre"
+                    maxlength="40"
+                    autocomplete="given-name"
+                    required
+                >
+            </div>
+
+            <label class="check-container">
+                <input type="checkbox" id="confirmacion" required>
+                <p>
+                    Confirmo que la información ingresada es verdadera y que
+                    utilizaré ACSU responsablemente.
+                </p>
+            </label>
+
+            <button type="submit" class="boton-ingresar" id="botonIngresar">
+                <span class="texto-boton">Ingresar a ACSU</span>
+                <span class="flecha">→</span>
+            </button>
+
+        </form>
+
+        <div id="mensajeError" class="mensaje-error" role="alert" aria-live="polite"></div>
+
+        <div class="seguridad">
+            <span>🔒</span>
+            <span>Tus datos se guardan solo en este navegador y se usan únicamente para esta demostración local.</span>
+        </div>
+
+        <p class="version">ACSU · Sistema de Seguridad Ciudadana</p>
+
+    </section>
+</main>
+
+<script src="login.js"></script>
+</body>
+</html>

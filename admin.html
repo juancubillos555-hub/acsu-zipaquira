@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Análisis de Criminalidad - Zipaquirá</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="logo">
+        <img src="imagen1.jpg" alt="Logo SIC-Zipaquirá" onerror="this.style.display='none'">
+        <h2>SIC-Zipaquirá</h2>
+    </div>
+
+    <nav>
+        <ul class="menu" id="navigationMenu">
+            <li><button class="menu-btn active" data-section="inicio">🏠 Inicio</button></li>
+            <li><button class="menu-btn" data-section="registrar">📝 Registrar incidente</button></li>
+            <li><button class="menu-btn" data-section="estadisticas">📊 Estadísticas</button></li>
+            <li><button class="menu-btn" data-section="mapa">📍 Mapa delictivo</button></li>
+            <li><button class="menu-btn" data-section="reportes">📁 Reportes <span class="insignia" id="insigniaPendientes" hidden>0</span></button></li>
+            <li><button class="menu-btn" data-section="alertas">🚨 Alertas</button></li>
+            <li><button class="menu-btn" data-section="configuracion">⚙️ Configuración</button></li>
+        </ul>
+    </nav>
+</aside>
+
+<main class="main">
+
+    <header class="header">
+        <h1>Sistema de Análisis de Criminalidad</h1>
+        <div class="user">👤 Administrador</div>
+    </header>
+
+
+    <!-- ================= INICIO ================= -->
+
+    <section id="inicio" class="seccion">
+
+        <div class="cards">
+            <div class="card">
+                <h3>Delitos registrados</h3>
+                <p id="totalDelitos">0</p>
+            </div>
+            <div class="card">
+                <h3>Zona de mayor riesgo</h3>
+                <p id="zonaRiesgo">-</p>
+            </div>
+            <div class="card">
+                <h3>Reportes pendientes</h3>
+                <p id="totalPendientes">0</p>
+            </div>
+            <div class="card">
+                <h3>Reportes en total</h3>
+                <p id="totalReportes">0</p>
+            </div>
+            <div class="card">
+                <h3>Nivel general de riesgo</h3>
+                <p id="nivelGeneral">🟢 Riesgo bajo</p>
+            </div>
+        </div>
+
+        <div class="alerts">
+            <h2>Últimas alertas</h2>
+            <div id="alertasRecientes">
+                <div class="alert">Sin alertas recientes.</div>
+            </div>
+            <div class="alert">Los datos se guardan solo en este navegador (modo demostración).</div>
+        </div>
+
+    </section>
+
+
+    <!-- ================= REGISTRAR ================= -->
+
+    <section id="registrar" class="seccion" hidden>
+        <div class="form-container">
+            <h2>📝 Registrar incidente</h2>
+
+            <form id="incidentForm">
+                <div class="form-group">
+                    <label for="tipoDelito">Tipo de delito</label>
+                    <select id="tipoDelito" required>
+                        <option>Hurto</option>
+                        <option>Vandalismo</option>
+                        <option>Violencia</option>
+                        <option>Microtráfico</option>
+                        <option>Accidente</option>
+                        <option>Persona sospechosa</option>
+                        <option>Emergencia</option>
+                        <option>Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="barrio">Barrio</label>
+                    <select id="barrio" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" id="direccion" placeholder="Ej: Carrera 15 # 4-20" maxlength="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" rows="4" maxlength="500" placeholder="Describe brevemente lo ocurrido"></textarea>
+                </div>
+
+                <button type="submit">Guardar reporte</button>
+            </form>
+        </div>
+    </section>
+
+
+    <!-- ================= ESTADÍSTICAS ================= -->
+
+    <section id="estadisticas" class="seccion" hidden>
+        <div class="chart">
+            <h2>📊 Estadísticas de criminalidad</h2>
+
+            <div class="chart-box">
+                <canvas id="crimeChart"></canvas>
+            </div>
+
+            <div class="risk-zone">
+                <h3>Zona con mayor incidencia</h3>
+                <p id="danger-zone">Sin registros disponibles</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ================= MAPA ================= -->
+
+    <section id="mapa" class="seccion" hidden>
+        <div class="map-container">
+            <h2>📍 Mapa delictivo de Zipaquirá</h2>
+
+            <div class="leyenda-riesgo">
+                <span><i style="background:#22c55e"></i> Sin casos</span>
+                <span><i style="background:#eab308"></i> Moderado (1-4)</span>
+                <span><i style="background:#f97316"></i> Medio-alto (5-9)</span>
+                <span><i style="background:#dc2626"></i> Crítico (10+)</span>
+            </div>
+
+            <div id="map"></div>
+        </div>
+    </section>
+
+
+    <!-- ================= REPORTES ================= -->
+
+    <section id="reportes" class="seccion" hidden>
+        <div class="reportes-container">
+            <h2>📁 Reportes registrados</h2>
+
+            <div class="toolbar">
+                <label for="filtroEstado">Filtrar por estado:</label>
+                <select id="filtroEstado">
+                    <option value="todos">Todos</option>
+                    <option value="Pendiente">🟡 Pendiente</option>
+                    <option value="En revisión">🔵 En revisión</option>
+                    <option value="Atendido">🟢 Atendido</option>
+                </select>
+            </div>
+
+            <div class="table-responsive">
+                <table id="tablaReportes">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Delito</th>
+                            <th>Barrio</th>
+                            <th>Dirección</th>
+                            <th>Usuario</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ================= ALERTAS ================= -->
+
+    <section id="alertas" class="seccion" hidden>
+        <div class="reportes-container">
+            <h2>🚨 Centro de alertas</h2>
+
+            <div class="toolbar">
+                <button class="btn-secundario" id="btnLimpiarAlertas">Limpiar alertas</button>
+            </div>
+
+            <div id="listaAlertas">
+                <div class="alert">No existen alertas registradas.</div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ================= CONFIGURACIÓN ================= -->
+
+    <section id="configuracion" class="seccion" hidden>
+        <div class="footer">
+            <h2>⚙️ Configuración</h2>
+            <p class="texto-suave">Personaliza el sistema.</p>
+
+            <div class="form-group">
+                <label for="themeSelect">Tema visual</label>
+                <select id="themeSelect">
+                    <option value="light">🌞 Claro</option>
+                    <option value="dark">🌙 Oscuro</option>
+                    <option value="blue">🔵 Azul institucional</option>
+                    <option value="green">🟢 Seguridad</option>
+                    <option value="red">🔴 Emergencias</option>
+                </select>
+            </div>
+
+            <label class="check-linea">
+                <input type="checkbox" id="chkSonido" checked>
+                <span>🔔 Sonido cuando llegue una alerta nueva</span>
+            </label>
+
+            <hr>
+
+            <p class="texto-suave">
+                Reiniciar borra todos los reportes, alertas y notificaciones guardados en este navegador.
+            </p>
+            <button class="btn-danger" id="btnReset">🗑️ Reiniciar sistema</button>
+        </div>
+    </section>
+
+</main>
+
+<div id="contenedorPopups" class="contenedor-popups" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

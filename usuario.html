@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACSU - Seguridad Ciudadana</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="usuario.css">
+</head>
+
+<body>
+
+<!-- ================= BARRA SUPERIOR ================= -->
+
+<header class="topbar">
+    <div class="logo">
+        <img src="imagen1.jpg" alt="Logo ACSU" onerror="this.style.display='none'">
+        <div>
+            <h2>ACSU</h2>
+            <span>Seguridad ciudadana</span>
+        </div>
+    </div>
+
+    <button class="notification-btn" onclick="mostrarSeccion('notificaciones')" title="Notificaciones" aria-label="Notificaciones">
+        🔔
+        <span id="contadorNotificaciones" style="display:none">0</span>
+    </button>
+</header>
+
+
+<main>
+
+    <!-- ================= INICIO ================= -->
+
+    <section id="inicio" class="seccion">
+
+        <div class="bienvenida">
+            <span class="saludo">Hola, <strong id="nombreUsuario">usuario</strong> 👋</span>
+            <h1>¿Qué está pasando en tu zona?</h1>
+            <p>Ayúdanos a mejorar la seguridad de Zipaquirá reportando situaciones.</p>
+        </div>
+
+        <button class="boton-emergencia" onclick="alertaEmergencia()">
+            🚨
+            <div>
+                <strong>Emergencia</strong>
+                <span>Reportar una situación urgente</span>
+            </div>
+            <b>→</b>
+        </button>
+
+        <p class="nota-emergencia">
+            ⚠️ ACSU no reemplaza a las autoridades. Si hay peligro inmediato,
+            llama a la línea de emergencias <strong>123</strong>.
+        </p>
+
+        <div class="titulo-seccion">
+            <h2>Accesos rápidos</h2>
+        </div>
+
+        <div class="accesos">
+            <button onclick="mostrarSeccion('reportar')">
+                <div class="icono azul">📝</div>
+                <strong>Reportar</strong>
+                <small>Crear reporte</small>
+            </button>
+
+            <button onclick="mostrarSeccion('mapa')">
+                <div class="icono verde">📍</div>
+                <strong>Mapa</strong>
+                <small>Elegir ubicación</small>
+            </button>
+
+            <button onclick="mostrarSeccion('misReportes')">
+                <div class="icono morado">📋</div>
+                <strong>Mis reportes</strong>
+                <small>Ver su estado</small>
+            </button>
+
+            <button onclick="mostrarSeccion('perfil')">
+                <div class="icono naranja">👤</div>
+                <strong>Mi perfil</strong>
+                <small>Cuenta y ajustes</small>
+            </button>
+        </div>
+
+        <div class="zona-segura">
+            <div>
+                <span>Estado del sistema</span>
+                <h3>ACSU está activo</h3>
+            </div>
+            <div class="estado-seguridad">
+                <span class="punto-verde"></span>
+                <strong>Activo</strong>
+            </div>
+        </div>
+
+        <div class="tarjeta-alerta">
+            <div class="alerta-icono">🔔</div>
+            <div>
+                <strong>Mantente informado</strong>
+                <p>Recibirás notificaciones cuando cambie el estado de tus reportes.</p>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- ================= REPORTAR ================= -->
+
+    <section id="reportar" class="seccion" hidden>
+
+        <div class="titulo-pagina">
+            <button onclick="mostrarSeccion('inicio')" aria-label="Volver">←</button>
+            <div>
+                <h1>Reportar situación</h1>
+                <p>Ayuda a mejorar la seguridad.</p>
+            </div>
+        </div>
+
+        <form id="formularioReporte" onsubmit="event.preventDefault(); registrarReporte();">
+
+            <div class="campo">
+                <label for="tipoDelito">🚨 Tipo de situación</label>
+                <select id="tipoDelito" required>
+                    <option value="">Selecciona una opción</option>
+                    <option value="Hurto">Hurto</option>
+                    <option value="Vandalismo">Vandalismo</option>
+                    <option value="Violencia">Violencia</option>
+                    <option value="Microtráfico">Microtráfico</option>
+                    <option value="Accidente">Accidente</option>
+                    <option value="Persona sospechosa">Persona sospechosa</option>
+                    <option value="Emergencia">Emergencia</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="barrio">🏘️ Barrio</label>
+                <select id="barrio" required>
+                    <option value="">Selecciona el barrio</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="direccion">🏠 Dirección o referencia</label>
+                <input type="text" id="direccion" placeholder="Ej: Calle 4 # 10-20" maxlength="100">
+            </div>
+
+            <div class="campo">
+                <label>📍 Ubicación en el mapa (opcional)</label>
+
+                <div class="ubicacion-box">
+                    <div>
+                        <strong id="estadoUbicacion">No has seleccionado una ubicación</strong>
+                        <small>Toca el mapa para elegir el lugar exacto.</small>
+                    </div>
+
+                    <button type="button" class="boton-ubicacion" onclick="mostrarSeccion('mapa')">
+                        📍 Seleccionar
+                    </button>
+                </div>
+
+                <button type="button" class="boton-quitar-ubicacion" onclick="quitarUbicacionSeleccionada()">
+                    🗑️ Quitar ubicación
+                </button>
+            </div>
+
+            <div class="campo">
+                <label for="descripcion">📝 Descripción</label>
+                <textarea id="descripcion" rows="5" maxlength="500" placeholder="Cuéntanos qué ocurrió..."></textarea>
+            </div>
+
+            <div class="aviso">
+                <span>⚠️</span>
+                <div>
+                    <strong>Reporta de manera responsable</strong>
+                    <p>Evita realizar reportes falsos. La información será asociada a tu cuenta.</p>
+                </div>
+            </div>
+
+            <label class="check-reporte">
+                <input type="checkbox" id="confirmarReporte" required>
+                <span>Confirmo que la información del reporte es verdadera.</span>
+            </label>
+
+            <button type="submit" class="boton-enviar" id="botonEnviar">🚨 Enviar reporte</button>
+
+        </form>
+
+    </section>
+
+
+    <!-- ================= MAPA ================= -->
+
+    <section id="mapa" class="seccion" hidden>
+
+        <div class="titulo-pagina">
+            <button onclick="mostrarSeccion('inicio')" aria-label="Volver">←</button>
+            <div>
+                <h1>Mapa</h1>
+                <p>Toca el mapa para elegir la ubicación del reporte.</p>
+            </div>
+        </div>
+
+        <div class="filtros-mapa">
+            <button type="button" class="filtro" onclick="usarMiUbicacion()">📍 Mi ubicación</button>
+            <button type="button" class="filtro" onclick="centrarMapa()">🗺️ Zipaquirá</button>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="leyenda">
+            <strong id="estadoUbicacionMapa">No has seleccionado una ubicación</strong>
+            <div>
+                <span class="punto azul-punto"></span>
+                <span>Lugar seleccionado para el reporte</span>
+            </div>
+        </div>
+
+        <div class="acciones-mapa">
+            <button type="button" onclick="quitarUbicacionSeleccionada()">🗑️ Quitar</button>
+            <button type="button" class="principal" onclick="confirmarUbicacion()">✔ Usar esta ubicación</button>
+        </div>
+
+    </section>
+
+
+    <!-- ================= MIS REPORTES ================= -->
+
+    <section id="misReportes" class="seccion" hidden>
+
+        <div class="titulo-pagina">
+            <button onclick="mostrarSeccion('inicio')" aria-label="Volver">←</button>
+            <div>
+                <h1>Mis reportes</h1>
+                <p>Reportes enviados desde tu cuenta.</p>
+            </div>
+        </div>
+
+        <div id="listaMisReportes"></div>
+
+        <button class="boton-borrar-reportes" onclick="borrarMisReportes()">🗑️ Borrar mis reportes</button>
+
+    </section>
+
+
+    <!-- ================= NOTIFICACIONES ================= -->
+
+    <section id="notificaciones" class="seccion" hidden>
+
+        <div class="titulo-pagina">
+            <button onclick="mostrarSeccion('inicio')" aria-label="Volver">←</button>
+            <div>
+                <h1>Notificaciones</h1>
+                <p>Información de seguridad.</p>
+            </div>
+        </div>
+
+        <div id="listaNotificaciones"></div>
+
+    </section>
+
+
+    <!-- ================= PERFIL ================= -->
+
+    <section id="perfil" class="seccion" hidden>
+
+        <div class="titulo-pagina">
+            <button onclick="mostrarSeccion('inicio')" aria-label="Volver">←</button>
+            <div>
+                <h1>Mi perfil</h1>
+                <p>Información de tu cuenta.</p>
+            </div>
+        </div>
+
+        <div class="perfil-card">
+            <div class="avatar">👤</div>
+            <h2 id="perfilNombre">Usuario</h2>
+            <p id="perfilDocumento">Documento</p>
+
+            <div class="opciones-perfil">
+                <button onclick="mostrarSeccion('configuracion')">⚙️ Configuración</button>
+                <button onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- ================= CONFIGURACIÓN ================= -->
+
+    <section id="configuracion" class="seccion" hidden>
+
+        <div class="titulo-pagina">
+            <button onclick="mostrarSeccion('perfil')" aria-label="Volver">←</button>
+            <div>
+                <h1>Configuración</h1>
+                <p>Personaliza ACSU.</p>
+            </div>
+        </div>
+
+        <div class="perfil-card">
+            <h2>🎨 Tema</h2>
+
+            <select id="themeSelect" class="selector-tema">
+                <option value="light">🌞 Claro</option>
+                <option value="dark">🌙 Oscuro</option>
+                <option value="blue">🔵 Azul institucional</option>
+                <option value="green">🟢 Seguridad</option>
+                <option value="red">🔴 Emergencias</option>
+            </select>
+
+            <div class="opciones-perfil">
+                <button onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- ================= MENÚ INFERIOR ================= -->
+
+<nav class="bottom-nav">
+
+    <button class="nav-item activo" data-seccion="inicio" onclick="mostrarSeccion('inicio')">
+        <span>🏠</span><small>Inicio</small>
+    </button>
+
+    <button class="nav-item" data-seccion="mapa" onclick="mostrarSeccion('mapa')">
+        <span>🗺️</span><small>Mapa</small>
+    </button>
+
+    <button class="nav-reportar" onclick="mostrarSeccion('reportar')" aria-label="Nuevo reporte">🚨</button>
+
+    <button class="nav-item" data-seccion="misReportes" onclick="mostrarSeccion('misReportes')">
+        <span>📋</span><small>Reportes</small>
+    </button>
+
+    <button class="nav-item" data-seccion="perfil" onclick="mostrarSeccion('perfil')">
+        <span>👤</span><small>Perfil</small>
+    </button>
+
+</nav>
+
+<div id="contenedorAvisos" class="contenedor-avisos" aria-live="polite"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="usuario.js"></script>
+</body>
+</html>
