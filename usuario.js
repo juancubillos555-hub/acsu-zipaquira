@@ -191,9 +191,8 @@ function iniciarMapa() {
 
     mapa = L.map("map").setView(CENTRO_ZIPAQUIRA, 14);
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-        attribution: "© OpenStreetMap contributors © CARTO",
-        subdomains: "abcd",
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
         maxZoom: 19
     }).addTo(mapa);
 
